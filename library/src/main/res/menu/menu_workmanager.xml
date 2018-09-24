@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <item
+        android:id="@+id/menu_refresh"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_refresh_white_24dp"
+        android:title="Refresh"/>
+    <item
+        android:id="@+id/menu_prune"
+        android:title="Prune"/>
+    <item
+        android:id="@+id/menu_cancel_all"
+        android:title="Cancel All"/>
+</menu>

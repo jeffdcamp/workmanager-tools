@@ -1,0 +1,91 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'maven'
+
+// todo JetBrains has indicated that coroutines are stable, but the kotlinx-coroutines designs may change ... remove this when kotlinx-coroutines are no longer experimental
+kotlin {
+    experimental {
+        coroutines 'enable' // temp disable warnings
+    }
+}
+
+android {
+    compileSdkVersion project.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion project.minSdkVersion
+        targetSdkVersion project.targetSdkVersion
+        vectorDrawables.useSupportLibrary = true // do not generate png's for svg files
+    }
+    buildTypes {
+        debug {
+            testCoverageEnabled = true
+        }
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+        kotlinOptions.freeCompilerArgs += ['-module-name', "$POM_ARTIFACT_ID"]
+    }
+}
+
+afterEvaluate {
+    // prevent BuildConfig from being generated (avoid conflict with dbtools-android)
+    generateReleaseBuildConfig.enabled = false
+}
+
+dependencies {
+    implementation "com.android.support:appcompat-v7:$supportLibVersion"
+    implementation "com.android.support:recyclerview-v7:$supportLibVersion"
+
+    implementation "android.arch.lifecycle:runtime:$archLifecycleVersion"
+    implementation "android.arch.lifecycle:extensions:$archLifecycleVersion"
+    implementation "android.arch.work:work-runtime-ktx:$archWorkVersion"
+    implementation "android.arch.persistence.room:runtime:$archRoomVersion"
+    implementation "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
+    implementation "com.jakewharton.timber:timber:$timberVersion"
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+}
+
+// =============== Maven Deployment ===============
+// ./gradlew clean check installLocal
+task installLocal(type: Upload) {
+    description "Installs the artifacts to the local Maven repository."
+    configuration = configurations['archives']
+    repositories {
+        mavenDeployer {
+            repository (url: "file://${System.env.HOME}/.m2/repository/")
+            pom.groupId = GROUP
+            pom.artifactId = POM_ARTIFACT_ID
+            pom.version = VERSION_NAME
+            pom.packaging = POM_PACKAGING
+            uniqueVersion = false // don't put in a timestamp on the filename (other project will not be able to depend on it)
+        }
+    }
+}
+
+// DEPLOY to Maven Central (this must be the last line of this file)
+// ./gradlew clean check uploadArchives
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
