@@ -1,13 +1,13 @@
 WorkManager Tools for Android
 =============================
 
-DBTools Room for Android is an library that makes it even easier to work with Google Room Library and SQLite Databases.
+WorkManager Tools for Android is an library that makes it even easier to work with Google WorkManager Library
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.dbtools/workmanager-tools/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.dbtools/workmanager-tools)
 
 **Features**
 
-* 
+* Ability to list scheduled work (FOR DEBUG ONLY)
 
 License
 =======
