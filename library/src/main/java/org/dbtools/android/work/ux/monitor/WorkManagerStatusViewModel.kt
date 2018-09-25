@@ -1,7 +1,7 @@
 package org.dbtools.android.work.ux.monitor
 
 import android.annotation.SuppressLint
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 import android.content.Context
 import androidx.work.WorkManager
 import androidx.work.impl.WorkDatabase

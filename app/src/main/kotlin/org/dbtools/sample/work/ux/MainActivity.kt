@@ -1,9 +1,9 @@
 package org.dbtools.sample.work.ux
 
 import android.content.Intent
-import android.databinding.DataBindingUtil
+import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import org.dbtools.sample.work.R
 import org.dbtools.sample.work.databinding.MainActivityBinding
 import org.dbtools.sample.work.inject.Injector

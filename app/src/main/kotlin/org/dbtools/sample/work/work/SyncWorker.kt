@@ -1,7 +1,7 @@
 package org.dbtools.sample.work.work
 
 import android.content.Context
-import android.support.annotation.WorkerThread
+import androidx.annotation.WorkerThread
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import org.dbtools.sample.work.inject.Injector

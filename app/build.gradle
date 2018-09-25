@@ -55,20 +55,20 @@ android {
 dependencies {
     implementation project(path: ':library')
 
-    implementation 'com.android.support:multidex:1.0.3'
-    implementation 'com.android.support:multidex-instrumentation:1.0.3'
+    implementation 'androidx.multidex:multidex:2.0.0'
+    implementation 'androidx.multidex:multidex-instrumentation:2.0.0'
 
     // Android
-    implementation "com.android.support.constraint:constraint-layout:1.1.3"
-    implementation "com.android.support:appcompat-v7:$supportLibVersion"
-    implementation "com.android.support:recyclerview-v7:$supportLibVersion"
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation "androidx.appcompat:appcompat:1.0.0"
+    implementation "androidx.recyclerview:recyclerview:1.0.0"
 
     // Architecture
-    implementation "android.arch.lifecycle:runtime:$archLifecycleVersion"
-    implementation "android.arch.lifecycle:extensions:$archLifecycleVersion"
-    implementation "android.arch.persistence.room:runtime:$archRoomVersion"
-    kapt "android.arch.lifecycle:compiler:$archLifecycleVersion"
-    kapt "android.arch.persistence.room:compiler:$archRoomVersion"
+    implementation "androidx.lifecycle:lifecycle-runtime:$archLifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-extensions:$archLifecycleVersion"
+    implementation "androidx.room:room-runtime:$archRoomVersion"
+    kapt "androidx.lifecycle:lifecycle-compiler:$archLifecycleVersion"
+    kapt "androidx.room:room-compiler:$archRoomVersion"
     implementation "android.arch.work:work-runtime-ktx:$archWorkVersion"
 
     // Kotlin
@@ -86,17 +86,17 @@ dependencies {
     // Test
     testImplementation "junit:junit:$junitVersion"
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
-    testImplementation "android.arch.persistence.room:testing:$archRoomVersion"
+    testImplementation "androidx.room:room-testing:$archRoomVersion"
     testImplementation "org.xerial:sqlite-jdbc:$xerialSqliteJdbcVersion"
 
-    testImplementation ("android.arch.core:core-testing:$archLifecycleVersion", {
+    testImplementation ("androidx.arch.core:core-testing:$archLifecycleVersion", {
         exclude group: 'com.android.support', module: 'support-compat'
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.android.support', module: 'support-core-utils'
     })
 
-    kaptTest "android.arch.persistence.room:compiler:$archRoomVersion"
-    kaptTest "android.arch.lifecycle:compiler:$archRoomVersion"
+    kaptTest "androidx.room:room-compiler:$archRoomVersion"
+    kaptTest "androidx.lifecycle:lifecycle-compiler:$archRoomVersion"
 
 }
 

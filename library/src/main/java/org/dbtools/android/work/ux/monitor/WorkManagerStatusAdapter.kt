@@ -3,11 +3,11 @@ package org.dbtools.android.work.ux.monitor
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
-import android.support.annotation.MenuRes
-import android.support.v7.recyclerview.extensions.ListAdapter
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.PopupMenu
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.MenuRes
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.DiffUtil
+import androidx.appcompat.widget.PopupMenu
+import androidx.recyclerview.widget.RecyclerView
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.Menu
@@ -127,7 +127,7 @@ class WorkManagerStatusAdapter(val viewModel: WorkManagerStatusViewModel) : List
         }
     }
 
-    class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.work_manager_status_list_item, parent, false)) {
+    class ViewHolder(parent: ViewGroup) : androidx.recyclerview.widget.RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.work_manager_status_list_item, parent, false)) {
         val nameTextView: TextView by lazy { itemView.findViewById<TextView>(R.id.nameTextView) }
         val statusTextView: TextView by lazy { itemView.findViewById<TextView>(R.id.statusTextView) }
         val menuView: View by lazy { itemView.findViewById<View>(R.id.menuView) }
@@ -154,11 +154,11 @@ class WorkManagerStatusAdapter(val viewModel: WorkManagerStatusViewModel) : List
      *         }
      *     }
      */
-    private fun setOnMenuClickListener(viewHolder: RecyclerView.ViewHolder,
-        view: View,
-        @MenuRes menuResourceId: Int,
-        onPreparePopupMenu: (position: Int, menu: Menu) -> Unit = { _, _ -> },
-        block: (position: Int, menuItem: MenuItem) -> Boolean
+    private fun setOnMenuClickListener(viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder,
+                                       view: View,
+                                       @MenuRes menuResourceId: Int,
+                                       onPreparePopupMenu: (position: Int, menu: Menu) -> Unit = { _, _ -> },
+                                       block: (position: Int, menuItem: MenuItem) -> Boolean
     ) {
         view.setOnClickListener {
             executeOnValidPosition(viewHolder) { position ->
@@ -182,8 +182,8 @@ class WorkManagerStatusAdapter(val viewModel: WorkManagerStatusViewModel) : List
         }
     }
 
-    private inline fun executeOnValidPosition(viewHolder: RecyclerView.ViewHolder, block: (position: Int) -> Unit) {
-        if (viewHolder.adapterPosition != android.support.v7.widget.RecyclerView.NO_POSITION) {
+    private inline fun executeOnValidPosition(viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, block: (position: Int) -> Unit) {
+        if (viewHolder.adapterPosition != androidx.recyclerview.widget.RecyclerView.NO_POSITION) {
             block(viewHolder.adapterPosition)
         }
     }

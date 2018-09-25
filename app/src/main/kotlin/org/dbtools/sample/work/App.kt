@@ -1,6 +1,6 @@
 package org.dbtools.sample.work
 
-import android.support.multidex.MultiDexApplication
+import androidx.multidex.MultiDexApplication
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.dbtools.sample.work.inject.Injector
 import timber.log.Timber

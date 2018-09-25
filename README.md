@@ -9,6 +9,9 @@ WorkManager Tools for Android is an library that makes it even easier to work wi
 
 * Ability to list scheduled work (FOR DEBUG ONLY)
 
+    * Version 1.0.0 Supports pre-AndroidX
+    * Version 1.2.0 AndroidX
+
 License
 =======
 

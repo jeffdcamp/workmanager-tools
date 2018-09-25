@@ -1,7 +1,7 @@
 package org.dbtools.sample.work.ux
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import org.dbtools.android.work.ux.monitor.WorkManagerStatusFragment
 import org.dbtools.sample.work.R
 
