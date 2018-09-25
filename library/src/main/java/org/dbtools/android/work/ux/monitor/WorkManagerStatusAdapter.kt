@@ -3,11 +3,6 @@ package org.dbtools.android.work.ux.monitor
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
-import androidx.annotation.MenuRes
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.DiffUtil
-import androidx.appcompat.widget.PopupMenu
-import androidx.recyclerview.widget.RecyclerView
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.Menu
@@ -15,9 +10,15 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.MenuRes
+import androidx.appcompat.widget.PopupMenu
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import androidx.work.NetworkType
 import androidx.work.impl.model.WorkSpec
 import org.dbtools.android.work.R
+import java.util.concurrent.TimeUnit
 
 class WorkManagerStatusAdapter(val viewModel: WorkManagerStatusViewModel) : ListAdapter<WorkSpec, WorkManagerStatusAdapter.ViewHolder>(DIFF_CALLBACK) {
 
@@ -116,8 +117,8 @@ class WorkManagerStatusAdapter(val viewModel: WorkManagerStatusViewModel) : List
 
     private fun formatInterval(length: Long): kotlin.String {
         val day = java.util.concurrent.TimeUnit.MILLISECONDS.toDays(length)
-        val hr = java.util.concurrent.TimeUnit.MILLISECONDS.toHours(length)
-        val min = java.util.concurrent.TimeUnit.MILLISECONDS.toMinutes(length - java.util.concurrent.TimeUnit.HOURS.toMillis(hr))
+        val hr = java.util.concurrent.TimeUnit.MILLISECONDS.toHours(length - TimeUnit.DAYS.toMillis(day))
+        val min = java.util.concurrent.TimeUnit.MILLISECONDS.toMinutes(length - TimeUnit.DAYS.toMillis(day) - TimeUnit.HOURS.toMillis(hr))
 
         return when {
             day > 0 -> kotlin.String.format("%dd %dh %dm", day, hr, min)
@@ -127,7 +128,7 @@ class WorkManagerStatusAdapter(val viewModel: WorkManagerStatusViewModel) : List
         }
     }
 
-    class ViewHolder(parent: ViewGroup) : androidx.recyclerview.widget.RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.work_manager_status_list_item, parent, false)) {
+    class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.work_manager_status_list_item, parent, false)) {
         val nameTextView: TextView by lazy { itemView.findViewById<TextView>(R.id.nameTextView) }
         val statusTextView: TextView by lazy { itemView.findViewById<TextView>(R.id.statusTextView) }
         val menuView: View by lazy { itemView.findViewById<View>(R.id.menuView) }
@@ -154,7 +155,7 @@ class WorkManagerStatusAdapter(val viewModel: WorkManagerStatusViewModel) : List
      *         }
      *     }
      */
-    private fun setOnMenuClickListener(viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder,
+    private fun setOnMenuClickListener(viewHolder: RecyclerView.ViewHolder,
                                        view: View,
                                        @MenuRes menuResourceId: Int,
                                        onPreparePopupMenu: (position: Int, menu: Menu) -> Unit = { _, _ -> },
@@ -182,8 +183,8 @@ class WorkManagerStatusAdapter(val viewModel: WorkManagerStatusViewModel) : List
         }
     }
 
-    private inline fun executeOnValidPosition(viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, block: (position: Int) -> Unit) {
-        if (viewHolder.adapterPosition != androidx.recyclerview.widget.RecyclerView.NO_POSITION) {
+    private inline fun executeOnValidPosition(viewHolder: RecyclerView.ViewHolder, block: (position: Int) -> Unit) {
+        if (viewHolder.adapterPosition != RecyclerView.NO_POSITION) {
             block(viewHolder.adapterPosition)
         }
     }
