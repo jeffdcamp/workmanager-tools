@@ -34,7 +34,9 @@ class WorkManagerStatusFragment : androidx.fragment.app.Fragment() {
 
         viewModel.init(requireContext())
         viewModel.onWorkSpecListUpdated = {
-            adapter.submitList(it)
+            activity?.runOnUiThread {
+                adapter.submitList(it)
+            }
         }
         viewModel.refresh()
     }
