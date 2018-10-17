@@ -1,8 +1,8 @@
 package org.dbtools.android.work.ux.monitor
 
 import android.annotation.SuppressLint
-import androidx.lifecycle.ViewModel
 import android.content.Context
+import androidx.lifecycle.ViewModel
 import androidx.work.WorkManager
 import androidx.work.impl.WorkDatabase
 import androidx.work.impl.model.WorkSpec
@@ -25,7 +25,13 @@ class WorkManagerStatusViewModel : ViewModel() {
         thread {
             val workSpecDao = workDatabase.workSpecDao()
             val workIds = workSpecDao.allWorkSpecIds
-            val workSpecList = workSpecDao.getWorkSpecs(workIds).toList()
+
+            // split up the items... because SQLite can only handle so many in a single query
+            val workSpecList = mutableListOf<WorkSpec>()
+            workIds.chunked(500).forEach { chunk ->
+                workSpecList.addAll(workSpecDao.getWorkSpecs(chunk).toList())
+            }
+
             onWorkSpecListUpdated(workSpecList)
         }
     }

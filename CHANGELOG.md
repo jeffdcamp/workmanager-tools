@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+Version 1.3.1 *(2018-10)*
+-------------------------
+* Fixed crash when there are a lot of work specs
+
 Version 1.3.0 *(2018-10)*
 -------------------------
 * WorkManager 1.0.0-alpha10
