@@ -82,7 +82,6 @@ dependencies {
     testImplementation "junit:junit:$junitVersion"
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
     testImplementation "androidx.room:room-testing:$archRoomVersion"
-    testImplementation "org.xerial:sqlite-jdbc:$xerialSqliteJdbcVersion"
 
     testImplementation ("androidx.arch.core:core-testing:$archLifecycleVersion", {
         exclude group: 'com.android.support', module: 'support-compat'
