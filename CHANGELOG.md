@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+Version 1.5.0 *(2018-11)*
+-------------------------
+* WorkManager 1.0.0-alpha11
+* CoroutineWorker in sample app
+
 Version 1.4.0 *(2018-10)*
 -------------------------
 * Kotlin 1.3.0

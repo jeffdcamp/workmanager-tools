@@ -2,7 +2,7 @@ package org.dbtools.sample.work.work
 
 import android.content.Context
 import androidx.annotation.WorkerThread
-import androidx.work.Worker
+import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import org.dbtools.sample.work.inject.Injector
 import timber.log.Timber
@@ -16,14 +16,14 @@ import timber.log.Timber
  * - Replace any existing scheduled (if there is a pending sync request... remove it and reset delay for 30 seconds)
  * - Require network connection
  */
-class SyncWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
+class SyncWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
 
     init {
         Injector.get().inject(this)
     }
 
     @WorkerThread
-    override fun doWork(): Result {
+    override suspend fun doWork(): Payload {
         logProgress("RUNNING")
 
         // simulate some work...
@@ -33,7 +33,7 @@ class SyncWorker(context: Context, params: WorkerParameters) : Worker(context, p
 
         if (isStopped) {
             logProgress("WORK2-SKIPPED")
-            return Result.SUCCESS
+            return Payload(Result.SUCCESS)
         }
 
         // simulate some work...
@@ -43,7 +43,7 @@ class SyncWorker(context: Context, params: WorkerParameters) : Worker(context, p
 
         logProgress("FINISHED")
         // return result
-        return Result.SUCCESS
+        return Payload(Result.SUCCESS)
     }
 
     private fun logProgress(progress: String) {
