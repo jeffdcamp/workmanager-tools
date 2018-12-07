@@ -3,6 +3,7 @@ package org.dbtools.sample.work.work
 import android.content.Context
 import androidx.annotation.WorkerThread
 import androidx.work.CoroutineWorker
+import androidx.work.Result
 import androidx.work.WorkerParameters
 import org.dbtools.sample.work.inject.Injector
 import timber.log.Timber
@@ -23,7 +24,7 @@ class SyncWorker(context: Context, params: WorkerParameters) : CoroutineWorker(c
     }
 
     @WorkerThread
-    override suspend fun doWork(): Payload {
+    override suspend fun doWork(): Result {
         logProgress("RUNNING")
 
         // simulate some work...
@@ -33,7 +34,7 @@ class SyncWorker(context: Context, params: WorkerParameters) : CoroutineWorker(c
 
         if (isStopped) {
             logProgress("WORK2-SKIPPED")
-            return Payload(Result.SUCCESS)
+            return Result.success()
         }
 
         // simulate some work...
@@ -43,7 +44,7 @@ class SyncWorker(context: Context, params: WorkerParameters) : CoroutineWorker(c
 
         logProgress("FINISHED")
         // return result
-        return Payload(Result.SUCCESS)
+        return Result.success()
     }
 
     private fun logProgress(progress: String) {

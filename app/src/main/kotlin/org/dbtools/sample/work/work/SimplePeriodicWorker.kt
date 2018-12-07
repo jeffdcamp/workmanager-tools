@@ -4,18 +4,19 @@ import android.content.Context
 import androidx.annotation.WorkerThread
 import androidx.work.CoroutineWorker
 import androidx.work.Data
+import androidx.work.Result
 import androidx.work.WorkerParameters
 import timber.log.Timber
 
 class SimplePeriodicWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     @WorkerThread
-    override suspend fun doWork(): Payload {
+    override suspend fun doWork(): Result {
         val inputText = inputData.getString(KEY_TEXT)
 
         logProgress("RUNNING PERIODIC: Text: [$inputText]")
 
         // return result
-        return Payload(Result.SUCCESS)
+        return Result.success()
     }
 
     private fun logProgress(progress: String) {

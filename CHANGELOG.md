@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+Version 1.6.0 *(2018-12)*
+-------------------------
+* WorkManager 1.0.0-alpha12
+
 Version 1.5.0 *(2018-11)*
 -------------------------
 * WorkManager 1.0.0-alpha11
