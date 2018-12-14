@@ -3,8 +3,9 @@ buildscript {
 
     repositories {
         mavenLocal()
-        jcenter()
+        mavenCentral()
         google()
+        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.4.0-alpha08'
@@ -17,8 +18,9 @@ buildscript {
 allprojects {
     repositories {
         mavenLocal()
-        jcenter()
         google()
+        mavenCentral()
+        jcenter()
     }
     apply plugin: 'com.github.ben-manes.versions' // ./gradlew dependencyUpdates -Drevision=release
 }
