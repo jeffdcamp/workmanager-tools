@@ -8,8 +8,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.0-beta03'
-        classpath 'com.github.ben-manes:gradle-versions-plugin:0.20.0' // version plugin support
+        classpath 'com.android.tools.build:gradle:3.5.0-alpha06'
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.21.0' // version plugin support
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
     }
@@ -36,7 +36,7 @@ ext {
 
     archLifecycleVersion = '2.0.0'
     archRoomVersion = '2.0.0'
-    archWorkVersion = '1.0.0-rc01'
+    archWorkVersion = '1.0.0'
     constraintLayoutVersion = '1.1.3'
     daggerVersion = '2.21'
 
