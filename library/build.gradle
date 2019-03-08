@@ -57,7 +57,7 @@ dependencies {
 
     implementation "androidx.lifecycle:lifecycle-runtime:$archLifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-extensions:$archLifecycleVersion"
-    implementation "android.arch.work:work-runtime-ktx:$archWorkVersion"
+    implementation "androidx.work:work-runtime-ktx:$archWorkVersion"
     implementation "androidx.room:room-runtime:$archRoomVersion"
     implementation "androidx.constraintlayout:constraintlayout:1.1.3"
 
@@ -66,7 +66,7 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.0'
-    testImplementation "org.mockito:mockito-core:2.24.5"
+    testImplementation "org.mockito:mockito-core:2.25.0"
 }
 
 // =============== Maven Deployment ===============
