@@ -1,12 +1,12 @@
 package org.dbtools.sample.work
 
-import androidx.multidex.MultiDexApplication
+import android.app.Application
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.dbtools.sample.work.inject.Injector
 import timber.log.Timber
 
 
-class App : MultiDexApplication() {
+class App : Application() {
 
     init {
         Injector.init(this)

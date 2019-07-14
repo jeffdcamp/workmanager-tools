@@ -1,23 +1,23 @@
 package org.dbtools.android.work.ux.monitor
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.work.WorkManager
 import org.dbtools.android.work.R
 
-class WorkManagerStatusFragment : androidx.fragment.app.Fragment() {
+class WorkManagerStatusFragment : Fragment() {
     private val viewModel by lazy { ViewModelProviders.of(this).get(WorkManagerStatusViewModel::class.java) }
-    private val adapter by lazy { WorkManagerStatusAdapter(viewModel) }
-    private lateinit var workManagerRecyclerView: androidx.recyclerview.widget.RecyclerView
+    private val adapter by lazy { WorkManagerStatusAdapter(requireContext(), viewModel) }
+    private lateinit var workManagerRecyclerView: RecyclerView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.work_manager_status_fragment, container, false)
@@ -42,7 +42,7 @@ class WorkManagerStatusFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun setupRecyclerView() {
-        workManagerRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
+        workManagerRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         workManagerRecyclerView.adapter = adapter
     }
 
@@ -59,11 +59,11 @@ class WorkManagerStatusFragment : androidx.fragment.app.Fragment() {
             }
 
             R.id.menu_cancel_all -> {
-                WorkManager.getInstance().cancelAllWork()
+                WorkManager.getInstance(requireContext()).cancelAllWork()
                 true
             }
             R.id.menu_prune -> {
-                WorkManager.getInstance().pruneWork()
+                WorkManager.getInstance(requireContext()).pruneWork()
                 true
             }
             else -> super.onOptionsItemSelected(item)

@@ -20,14 +20,17 @@ import androidx.work.impl.model.WorkSpec
 import org.dbtools.android.work.R
 import java.util.concurrent.TimeUnit
 
-class WorkManagerStatusAdapter(val viewModel: WorkManagerStatusViewModel) : ListAdapter<WorkSpec, WorkManagerStatusAdapter.ViewHolder>(DIFF_CALLBACK) {
+class WorkManagerStatusAdapter(
+    private val context: Context,
+    private val viewModel: WorkManagerStatusViewModel
+) : ListAdapter<WorkSpec, WorkManagerStatusAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(parent).apply {
             setOnMenuClickListener(this, menuView, R.menu.menu_popup_worker_item) { position, menuItem ->
                 return@setOnMenuClickListener when (menuItem.itemId) {
                     R.id.menu_popup_cancel -> {
-                        viewModel.onCancelWorker(getItem(position))
+                        viewModel.onCancelWorker(context, getItem(position))
                     }
                     else -> false
                 }

@@ -18,6 +18,6 @@ class AppModule(private val application: Application) {
     @Provides
     @Singleton
     fun provideWorkManager(): WorkManager {
-        return WorkManager.getInstance()
+        return WorkManager.getInstance(application)
     }
 }

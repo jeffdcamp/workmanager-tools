@@ -3,6 +3,7 @@ package org.dbtools.android.work.ux.monitor
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import androidx.work.Configuration
 import androidx.work.WorkManager
 import androidx.work.impl.WorkDatabase
 import androidx.work.impl.model.WorkSpec
@@ -16,8 +17,8 @@ class WorkManagerStatusViewModel : ViewModel() {
     var onWorkSpecListUpdated: (List<WorkSpec>) -> Unit = {}
 
     @SuppressLint("RestrictedApi")
-    fun init(context: Context) {
-        workDatabase = WorkDatabase.create(context, false)
+    fun init(context: Context, configuration: Configuration = Configuration.Builder().build()) {
+        workDatabase = WorkDatabase.create(context, configuration.taskExecutor, false)
     }
 
     @SuppressLint("RestrictedApi")
@@ -36,8 +37,8 @@ class WorkManagerStatusViewModel : ViewModel() {
         }
     }
 
-    fun onCancelWorker(workSpec: WorkSpec): Boolean {
-        val workManager = WorkManager.getInstance()
+    fun onCancelWorker(context: Context, workSpec: WorkSpec): Boolean {
+        val workManager = WorkManager.getInstance(context)
         val workId = UUID.fromString(workSpec.id)
         workManager.cancelWorkById(workId)
 
