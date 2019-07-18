@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+Version 1.8.1 *(2019-07)*
+-------------------------
+* Fixed missing dependencies
+
 Version 1.8.0 *(2019-07)*
 -------------------------
 * WorkManager 2.1.0
