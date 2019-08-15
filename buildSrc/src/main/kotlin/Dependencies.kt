@@ -12,7 +12,7 @@ object Deps {
     const val ARCH_LIFECYCLE_VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0"
     const val ARCH_LIFECYCLE_COMMON = "androidx.lifecycle:lifecycle-common-java8:2.0.0"
 
-    const val ARCH_WORK_RUNTIME = "androidx.work:work-runtime-ktx:2.1.0"
+    const val ARCH_WORK_RUNTIME = "androidx.work:work-runtime-ktx:2.2.0"
 
     const val ANDROID_MATERIAL = "com.google.android.material:material:1.1.0-alpha06"
     const val ANDROID_MULTIDEX = "androidx.multidex:multidex:2.0.1"
@@ -24,7 +24,7 @@ object Deps {
     const val KOTLIN_SERIALIZATION = "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.11.0"
     private const val COROUTINES_VERSION = "1.2.1"
     const val COROUTINES = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$COROUTINES_VERSION"
-    private const val DAGGER_VERSION = "2.23"
+    private const val DAGGER_VERSION = "2.24"
     const val DAGGER = "com.google.dagger:dagger:$DAGGER_VERSION"
     const val DAGGER_COMPILER = "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
     const val GSON = "com.google.code.gson:gson:2.8.5"
@@ -44,7 +44,7 @@ object Deps {
     const val XERIAL_SQLITE = "org.xerial:sqlite-jdbc:3.28.0"
 
     // Test
-    private const val JUNIT_VERSION = "5.5.0"
+    private const val JUNIT_VERSION = "5.5.1"
     const val TEST_JUNIT = "org.junit.jupiter:junit-jupiter:$JUNIT_VERSION"
     const val TEST_JUNIT_ENGINE = "org.junit.jupiter:junit-jupiter-engine:$JUNIT_VERSION"
 
