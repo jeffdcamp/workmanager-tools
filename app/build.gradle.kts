@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 // Kotlin Libraries targeting Java8 bytecode can cause the following error (such as okHttp 4.x):
@@ -21,15 +22,6 @@ android {
         versionCode = 1000
         versionName = "1.0.0"
 
-        multiDexEnabled = true
-
-        // used by Room, to test migrations
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = mapOf("room.schemaLocation" to "$projectDir/schema")
-            }
-        }
-
         // Espresso
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -39,8 +31,9 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    dataBinding {
-        setEnabled(true)
+    buildFeatures {
+        viewBinding = true
+        dataBinding = true
     }
 
     lintOptions {
@@ -57,18 +50,6 @@ android {
             versionNameSuffix = ""
         }
     }
-
-    sourceSets {
-        getByName("main") {
-            java.srcDir("src/main/kotlin")
-        }
-        getByName("test") {
-            java.srcDir("src/test/kotlin")
-        }
-        getByName("androidTest") {
-            assets.srcDir("$projectDir/schemas")
-        }
-    }
 }
 
 dependencies {
@@ -82,10 +63,14 @@ dependencies {
     // Code
     implementation(Deps.KOTLIN_STD_LIB)
     implementation(Deps.COROUTINES)
-    implementation(Deps.THREETEN_ABP)
     implementation(Deps.TIMBER)
 
-    // UI
+    // Inject
+    implementation(Deps.HILT)
+    kapt(Deps.HILT_COMPILER)
+    implementation(Deps.ANDROIDX_HILT_WORK)
+    implementation(Deps.ANDROIDX_HILT_VIEWMODEL)
+    kapt(Deps.ANDROIDX_HILT_COMPILER)
 
     // === Android Architecture Components ===
     implementation(Deps.ARCH_LIFECYCLE_EXT)

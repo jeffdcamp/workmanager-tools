@@ -11,7 +11,6 @@ import timber.log.Timber
  * Example simple worker... one that should execute every time it is called
  */
 class SimpleWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
-    @WorkerThread
     override suspend fun doWork(): Result {
         val inputText = inputData.getString(KEY_TEXT)
 

@@ -1,10 +1,8 @@
 package org.dbtools.sample.work.work
 
 import android.content.Context
-import androidx.annotation.WorkerThread
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import org.dbtools.sample.work.inject.Injector
 import timber.log.Timber
 
 /**
@@ -18,11 +16,6 @@ import timber.log.Timber
  */
 class SyncWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
 
-    init {
-        Injector.get().inject(this)
-    }
-
-    @WorkerThread
     override suspend fun doWork(): Result {
         logProgress("RUNNING")
 

@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+Version 1.12.0 *(2020-07)*
+-------------------------
+* WorkManager 2.4.0
+* Improved sample app
+* Updated all versions
+
 Version 1.12.0 *(2020-03)*
 -------------------------
 * WorkManager 2.3.4

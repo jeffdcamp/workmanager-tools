@@ -1,24 +1,30 @@
 package org.dbtools.sample.work
 
 import android.app.Application
-import com.jakewharton.threetenabp.AndroidThreeTen
-import org.dbtools.sample.work.inject.Injector
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
+import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
+import javax.inject.Inject
 
+@HiltAndroidApp
+class App : Application(), Configuration.Provider {
 
-class App : Application() {
-
-    init {
-        Injector.init(this)
-    }
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
 
     override fun onCreate() {
         super.onCreate()
-        AndroidThreeTen.init(this)
         setupLogging()
     }
 
     private fun setupLogging() {
         Timber.plant(Timber.DebugTree())
+    }
+
+    override fun getWorkManagerConfiguration(): Configuration {
+        return Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
     }
 }

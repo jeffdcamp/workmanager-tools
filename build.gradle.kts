@@ -8,9 +8,10 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:3.6.1")
-        classpath("com.github.ben-manes:gradle-versions-plugin:0.28.0") // version plugin support
+        classpath("com.android.tools.build:gradle:4.0.1")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION")
+        classpath("com.google.dagger:hilt-android-gradle-plugin:$DAGGER_HILT_VERSION")
+        classpath("com.github.ben-manes:gradle-versions-plugin:0.29.0") // version plugin support
     }
 }
 
@@ -27,7 +28,7 @@ allprojects {
     // Gradle Dependency Check
     apply(plugin = "com.github.ben-manes.versions") // ./gradlew dependencyUpdates -Drevision=release
     val excludeVersionContaining = listOf("alpha", "eap") // example: "alpha", "beta"
-    val ignoreArtifacts = emptyList<String>() // some artifacts may be OK to check for "alpha"... add these exceptions here
+    val ignoreArtifacts = listOf("material", "hilt-android") // some artifacts may be OK to check for "alpha"... add these exceptions here
 
     tasks.named<DependencyUpdatesTask>("dependencyUpdates") {
         resolutionStrategy {

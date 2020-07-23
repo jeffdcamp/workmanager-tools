@@ -1,14 +1,12 @@
 package org.dbtools.sample.work.work
 
 import android.content.Context
-import androidx.annotation.WorkerThread
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
 import timber.log.Timber
 
 class SimplePeriodicWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
-    @WorkerThread
     override suspend fun doWork(): Result {
         val inputText = inputData.getString(KEY_TEXT)
 
