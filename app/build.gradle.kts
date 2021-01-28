@@ -50,6 +50,18 @@ android {
             versionNameSuffix = ""
         }
     }
+
+    sourceSets {
+        getByName("main") {
+            java.srcDir("src/main/kotlin")
+        }
+        getByName("test") {
+            java.srcDir("src/test/kotlin")
+        }
+        getByName("androidTest") {
+            assets.srcDir("$projectDir/schemas")
+        }
+    }
 }
 
 dependencies {
@@ -59,9 +71,10 @@ dependencies {
     implementation(Deps.ANDROIDX_APPCOMPAT)
     implementation(Deps.ANDROIDX_CONSTRAINT_LAYOUT)
     implementation(Deps.ANDROIDX_RECYCLERVIEW)
+    implementation(Deps.ANDROIDX_ACTIVITY_KTX)
+    implementation(Deps.ANDROIDX_FRAGMENT_KTX)
 
     // Code
-    implementation(Deps.KOTLIN_STD_LIB)
     implementation(Deps.COROUTINES)
     implementation(Deps.TIMBER)
 
@@ -73,8 +86,8 @@ dependencies {
     kapt(Deps.ANDROIDX_HILT_COMPILER)
 
     // === Android Architecture Components ===
-    implementation(Deps.ARCH_LIFECYCLE_EXT)
     implementation(Deps.ARCH_LIFECYCLE_RUNTIME)
+    implementation(Deps.ARCH_LIFECYCLE_VIEWMODEL)
 
     // Dagger 2
     implementation(Deps.DAGGER)

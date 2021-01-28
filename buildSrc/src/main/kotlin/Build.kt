@@ -1,16 +1,14 @@
 @file:Suppress("MemberVisibilityCanBePrivate")
 
-const val KOTLIN_VERSION = "1.3.72"
-
 object AndroidSdk {
     const val MIN = 21
-    const val COMPILE = 29
+    const val COMPILE = 30
     const val TARGET = COMPILE
 }
 
 object Pom {
     const val GROUP_ID = "org.dbtools"
-    const val VERSION_NAME = "1.13.0"
+    const val VERSION_NAME = "1.14.0"
     const val POM_DESCRIPTION = "WorkManager Tools"
 
     const val URL = "https://github.com/jeffdcamp/workmanager-tools/"

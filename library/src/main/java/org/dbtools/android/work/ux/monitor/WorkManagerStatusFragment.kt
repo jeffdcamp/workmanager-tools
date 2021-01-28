@@ -8,15 +8,15 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.WorkManager
 import org.dbtools.android.work.R
 
 class WorkManagerStatusFragment : Fragment() {
-    private val viewModel by lazy { ViewModelProviders.of(this).get(WorkManagerStatusViewModel::class.java) }
-    private val adapter by lazy { WorkManagerStatusAdapter(requireContext(), viewModel) }
+    private val viewModel: WorkManagerStatusViewModel by viewModels()
+    private lateinit var adapter: WorkManagerStatusAdapter
     private lateinit var workManagerRecyclerView: RecyclerView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -25,8 +25,8 @@ class WorkManagerStatusFragment : Fragment() {
         return view
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setHasOptionsMenu(true)
         activity?.actionBar?.title = "WorkManager Status"
@@ -43,6 +43,8 @@ class WorkManagerStatusFragment : Fragment() {
 
     private fun setupRecyclerView() {
         workManagerRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        adapter = WorkManagerStatusAdapter(requireContext(), viewModel)
         workManagerRecyclerView.adapter = adapter
     }
 

@@ -9,6 +9,13 @@ plugins {
     kotlin("kapt")
 }
 
+// Kotlin Libraries targeting Java8 bytecode can cause the following error (such as okHttp 4.x):
+// "Cannot inline bytecode built with JVM target 1.8 into bytecode that is being built with JVM target 1.6. Please specify proper '-jvm-target' option"
+// The following is added to allow the Kotlin Compiler to compile properly
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
 android {
     compileSdkVersion(AndroidSdk.COMPILE)
 
@@ -49,12 +56,11 @@ tasks.withType<KotlinCompile> {
 dependencies {
     api(Deps.ANDROIDX_APPCOMPAT)
     api(Deps.ANDROIDX_RECYCLERVIEW)
-    api(Deps.ARCH_LIFECYCLE_EXT)
+    api(Deps.ANDROIDX_FRAGMENT_KTX)
     api(Deps.ARCH_LIFECYCLE_RUNTIME)
     api(Deps.ARCH_WORK_RUNTIME)
     api(Deps.ARCH_ROOM_RUNTIME)
     api(Deps.ANDROIDX_CONSTRAINT_LAYOUT)
-    api(Deps.KOTLIN_STD_LIB)
     api(Deps.TIMBER)
 
     // Test
