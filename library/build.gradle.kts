@@ -17,11 +17,11 @@ tasks.withType<KotlinCompile> {
 }
 
 android {
-    compileSdkVersion(AndroidSdk.COMPILE)
+    compileSdk = AndroidSdk.COMPILE
 
     defaultConfig {
-        minSdkVersion(AndroidSdk.MIN)
-        targetSdkVersion(AndroidSdk.TARGET)
+        minSdk = AndroidSdk.MIN
+        targetSdk = AndroidSdk.TARGET
     }
 
     compileOptions {
@@ -29,7 +29,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    lintOptions {
+    lint {
         isAbortOnError = true
         disable("InvalidPackage")
     }
@@ -54,20 +54,21 @@ tasks.withType<KotlinCompile> {
 }
 
 dependencies {
-    api(Deps.ANDROIDX_APPCOMPAT)
-    api(Deps.ANDROIDX_RECYCLERVIEW)
-    api(Deps.ANDROIDX_FRAGMENT_KTX)
-    api(Deps.ARCH_LIFECYCLE_RUNTIME)
-    api(Deps.ARCH_WORK_RUNTIME)
-    api(Deps.ARCH_ROOM_RUNTIME)
-    api(Deps.ANDROIDX_CONSTRAINT_LAYOUT)
-    api(Deps.TIMBER)
+    api(libs.androidx.appcompat)
+    api(libs.androidx.recyclerview)
+    api(libs.androidx.fragment)
+    api(libs.androidx.lifecycle.runtime)
+    api(libs.androidx.work.runtime)
+    api(libs.androidx.room.runtime)
+    api(libs.androidx.constraintlayout)
+    api(libs.timber)
 
     // Test
-    testImplementation(Deps.TEST_JUNIT)
-    testImplementation(Deps.TEST_JUNIT_ENGINE)
-    testImplementation(Deps.TEST_MOCKITO_CORE)
-    testImplementation(Deps.TEST_MOCKITO_KOTLIN)
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.engine)
+    testImplementation(libs.mockK)
+    testImplementation(libs.truth)
 }
 
 // ===== TEST TASKS =====
@@ -97,7 +98,7 @@ publishing {
             artifact(tasks["sourcesJar"])
             afterEvaluate { artifact(tasks.getByName("bundleReleaseAar")) }
             pom {
-                name.set("My Library")
+                name.set(Pom.POM_NAME)
                 description.set(Pom.POM_DESCRIPTION)
                 url.set(Pom.URL)
                 licenses {

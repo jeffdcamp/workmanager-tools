@@ -13,11 +13,11 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 }
 
 android {
-    compileSdkVersion(AndroidSdk.COMPILE)
+    compileSdk = AndroidSdk.COMPILE
 
     defaultConfig {
-        minSdkVersion(AndroidSdk.MIN)
-        targetSdkVersion(AndroidSdk.TARGET)
+        minSdk = AndroidSdk.MIN
+        targetSdk = AndroidSdk.TARGET
 
         versionCode = 1000
         versionName = "1.0.0"
@@ -33,20 +33,19 @@ android {
 
     buildFeatures {
         viewBinding = true
-        dataBinding = true
     }
 
-    lintOptions {
+    lint {
         isAbortOnError = true
         disable("InvalidPackage")
     }
 
     buildTypes {
-        getByName("debug") {
+        debug {
             versionNameSuffix = " DEV"
             applicationIdSuffix = ".dev"
         }
-        getByName("release") {
+        release {
             versionNameSuffix = ""
         }
     }
@@ -68,31 +67,25 @@ dependencies {
     implementation(project(":library"))
 
     // Android
-    implementation(Deps.ANDROIDX_APPCOMPAT)
-    implementation(Deps.ANDROIDX_CONSTRAINT_LAYOUT)
-    implementation(Deps.ANDROIDX_RECYCLERVIEW)
-    implementation(Deps.ANDROIDX_ACTIVITY_KTX)
-    implementation(Deps.ANDROIDX_FRAGMENT_KTX)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.fragment)
 
     // Code
-    implementation(Deps.COROUTINES)
-    implementation(Deps.TIMBER)
+    implementation(libs.kotlin.coroutines.android)
+    implementation(libs.timber)
 
     // Inject
-    implementation(Deps.HILT)
-    kapt(Deps.HILT_COMPILER)
-    implementation(Deps.ANDROIDX_HILT_WORK)
-    implementation(Deps.ANDROIDX_HILT_VIEWMODEL)
-    kapt(Deps.ANDROIDX_HILT_COMPILER)
+    kapt(libs.google.hilt.compiler)
+    kapt(libs.androidx.hilt.compiler)
+    implementation(libs.google.hilt.library)
+    implementation(libs.androidx.hilt.work)
 
     // === Android Architecture Components ===
-    implementation(Deps.ARCH_LIFECYCLE_RUNTIME)
-    implementation(Deps.ARCH_LIFECYCLE_VIEWMODEL)
-
-    // Dagger 2
-    implementation(Deps.DAGGER)
-    kapt(Deps.DAGGER_COMPILER)
-
+    implementation(libs.androidx.lifecycle.runtime)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 }
 
 // ===== TEST TASKS =====
