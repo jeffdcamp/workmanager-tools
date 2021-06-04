@@ -1,9 +1,1 @@
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.dbtools.android.work"
-    >
-
-    <application>
-        <activity android:name=".ux.monitor.WorkManagerStatusFragment" />
-    </application>
-</manifest>
+<manifest package="org.dbtools.android.work" />
