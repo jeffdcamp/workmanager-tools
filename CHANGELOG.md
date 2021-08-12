@@ -3,6 +3,11 @@ Change Log
 
 Version 1.2.0-beta01 *(2021-06)*
 -------------------------
+* WorkManager 2.6.0-rc01
+* Updated other versions
+
+Version 1.2.0-beta01 *(2021-06)*
+-------------------------
 * WorkManager 2.6.0-beta01
 * Updated other versions
 
