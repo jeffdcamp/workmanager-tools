@@ -1,14 +1,10 @@
 Change Log
 ==========
 
-Version 1.2.0-beta01 *(2021-06)*
+Version 1.15.0-rc01 *(2021-08)*
 -------------------------
 * WorkManager 2.6.0-rc01
-* Updated other versions
-
-Version 1.2.0-beta01 *(2021-06)*
--------------------------
-* WorkManager 2.6.0-beta01
+* Kotlin 1.5.21
 * Updated other versions
 
 Version 1.14.1 *(2021-05)*
