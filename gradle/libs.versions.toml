@@ -7,7 +7,7 @@ androidxhilt = "1.0.0"
 androidxlifecycle = "2.3.1"
 hilt = "2.38.1"
 room = "2.3.0"
-work = "2.6.0"
+work = "2.7.0-beta01"
 
 [libraries]
 android-gradlePluginClasspath = { module = "com.android.tools.build:gradle", version.ref = "agp" }

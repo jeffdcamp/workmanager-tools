@@ -2,13 +2,13 @@
 
 object AndroidSdk {
     const val MIN = 21
-    const val COMPILE = 30
+    const val COMPILE = 31
     const val TARGET = COMPILE
 }
 
 object Pom {
     const val GROUP_ID = "org.dbtools"
-    const val VERSION_NAME = "1.15.0"
+    const val VERSION_NAME = "1.16.0-beta01"
     const val POM_NAME = "WorkManager Tools"
     const val POM_DESCRIPTION = "WorkManager Tools for Android is an library that makes it even easier to work with Google WorkManager Library"
 

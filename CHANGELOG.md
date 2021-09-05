@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+Version 1.16.0-beta01 *(2021-09)*
+-------------------------
+* WorkManager 2.7.0-beta01
+* Target Android SDK 31
+
 Version 1.15.0 *(2021-09)*
 -------------------------
 * WorkManager 2.6.0
