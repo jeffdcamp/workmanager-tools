@@ -8,13 +8,10 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        // workaround for no support of "libs" in buildscript (https://github.com/gradle/gradle/issues/16958#issuecomment-827140071) (https://discuss.gradle.org/t/trouble-using-centralized-dependency-versions-in-buildsrc-plugins-and-buildscript-classpath/39421)
-        val libs = project.extensions.getByType<VersionCatalogsExtension>().named("libs") as org.gradle.accessors.dm.LibrariesForLibs
-
-        classpath(libs.android.gradlePlugin)
-        classpath(libs.kotlin.gradlePlugin)
-        classpath(libs.google.hilt.gradlePlugin)
-        classpath(libs.gradleVersions.gradlePlugin)
+        classpath(libs.android.gradlePluginClasspath)
+        classpath(libs.kotlin.gradlePluginClasspath)
+        classpath(libs.google.hilt.gradlePluginClasspath)
+        classpath(libs.gradleVersions.gradlePluginClasspath)
     }
 }
 
