@@ -2,30 +2,50 @@ package org.dbtools.sample.work.ux
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import dagger.hilt.android.AndroidEntryPoint
-import org.dbtools.sample.work.databinding.MainActivityBinding
 import org.dbtools.sample.work.work.WorkScheduler
 import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var workScheduler: WorkScheduler
 
-    private lateinit var binding: MainActivityBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = MainActivityBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContent {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = {
+                            Text(
+                                text = "WorkManager Tools"
+                            )
+                        },
+                    )
+                }
+            ) {
+                Column(modifier = Modifier.padding(16.dp, 16.dp)) {
+                    Button(onClick = { showWorkManagerMonitor() }) { Text("Work Manager Monitor") }
+                    Button(onClick = { workScheduler.scheduleSimpleWork("Test") }) { Text("Start Simple") }
+                    Button(onClick = { workScheduler.scheduleSync() }) { Text("Start Sync") }
+                    Button(onClick = { workScheduler.schedulePeriodic() }) { Text("Start Periodic") }
+                }
 
-        binding.monitorButton.setOnClickListener { showWorkManagerMonitor() }
-        binding.startSimpleButton.setOnClickListener { workScheduler.scheduleSimpleWork("Test") }
-        binding.startSyncButton.setOnClickListener { workScheduler.scheduleSync() }
-        binding.startPeriodicButton.setOnClickListener { workScheduler.schedulePeriodic() }
+            }
+        }
     }
 
     private fun showWorkManagerMonitor() {

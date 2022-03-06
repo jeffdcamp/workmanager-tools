@@ -12,7 +12,7 @@ WorkManager Tools for Android is an library that makes it even easier to work wi
 License
 =======
 
-    Copyright 2020 Jeff Campbell
+    Copyright 2022 Jeff Campbell
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

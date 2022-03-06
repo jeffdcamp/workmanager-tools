@@ -26,18 +26,17 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+    buildFeatures {
+        compose = true
     }
 
-    buildFeatures {
-        viewBinding = true
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.get()
     }
 
     lint {
-        isAbortOnError = true
-        disable("InvalidPackage")
+        abortOnError = true
+        disable.addAll(listOf("InvalidPackage"))
     }
 
     buildTypes {
@@ -66,12 +65,13 @@ android {
 dependencies {
     implementation(project(":library"))
 
-    // Android
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.recyclerview)
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.fragment)
+    // Compose
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.tooling)
+    implementation(libs.compose.material.material)
 
     // Code
     implementation(libs.kotlin.coroutines.android)
@@ -84,8 +84,8 @@ dependencies {
     implementation(libs.androidx.hilt.work)
 
     // === Android Architecture Components ===
-    implementation(libs.androidx.lifecycle.runtime)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+//    implementation(libs.androidx.lifecycle.runtime)
+//    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 }
 
 // ===== TEST TASKS =====

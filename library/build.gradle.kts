@@ -1,5 +1,4 @@
 import com.android.build.gradle.BaseExtension
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("com.android.library")
@@ -7,13 +6,6 @@ plugins {
     signing
     kotlin("android")
     kotlin("kapt")
-}
-
-// Kotlin Libraries targeting Java8 bytecode can cause the following error (such as okHttp 4.x):
-// "Cannot inline bytecode built with JVM target 1.8 into bytecode that is being built with JVM target 1.6. Please specify proper '-jvm-target' option"
-// The following is added to allow the Kotlin Compiler to compile properly
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
 }
 
 android {
@@ -24,14 +16,22 @@ android {
         targetSdk = AndroidSdk.TARGET
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+    kotlinOptions {
+        jvmTarget = "1.8"
+        freeCompilerArgs = listOf("-module-name", Pom.LIBRARY_ARTIFACT_ID)
     }
 
     lint {
-        isAbortOnError = true
-        disable("InvalidPackage")
+        abortOnError = true
+        disable.addAll(listOf("InvalidPackage"))
+    }
+
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.get()
     }
 
     sourceSets {
@@ -47,21 +47,18 @@ android {
     }
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-module-name", Pom.LIBRARY_ARTIFACT_ID)
-    }
-}
-
 dependencies {
-    api(libs.androidx.appcompat)
-    api(libs.androidx.recyclerview)
-    api(libs.androidx.fragment)
-    api(libs.androidx.lifecycle.runtime)
     api(libs.androidx.work.runtime)
     api(libs.androidx.room.runtime)
-    api(libs.androidx.constraintlayout)
     api(libs.timber)
+
+    // Compose
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.tooling)
+    implementation(libs.compose.material.material)
 
     // Test
     testImplementation(platform(libs.junit.bom))

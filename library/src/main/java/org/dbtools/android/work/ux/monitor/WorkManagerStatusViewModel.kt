@@ -1,51 +1,160 @@
 package org.dbtools.android.work.ux.monitor
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.content.Context
-import androidx.lifecycle.ViewModel
+import android.os.Build
+import android.text.format.DateUtils
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.work.Configuration
+import androidx.work.NetworkType
 import androidx.work.WorkManager
 import androidx.work.impl.WorkDatabase
 import androidx.work.impl.model.WorkSpec
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.util.UUID
-import kotlin.concurrent.thread
+import java.util.concurrent.TimeUnit
 
-class WorkManagerStatusViewModel : ViewModel() {
+@SuppressLint("RestrictedApi")
+class WorkManagerStatusViewModel(
+    application: Application
+) : AndroidViewModel(application) {
 
-    private lateinit var workDatabase: WorkDatabase
+    private val workDatabase: WorkDatabase
 
-    var onWorkSpecListUpdated: (List<WorkSpec>) -> Unit = {}
+    private val _workSpecListFlow = MutableStateFlow<List<ListItemData>?>(null)
+    var workSpecListFlow: StateFlow<List<ListItemData>?> = _workSpecListFlow.asStateFlow()
 
-    @SuppressLint("RestrictedApi")
-    fun init(context: Context, configuration: Configuration = Configuration.Builder().build()) {
-        workDatabase = WorkDatabase.create(context, configuration.taskExecutor, false)
+    init {
+        val configuration: Configuration = Configuration.Builder().build()
+        workDatabase = WorkDatabase.create(application, configuration.taskExecutor, false)
+        refresh()
     }
 
-    @SuppressLint("RestrictedApi")
-    fun getAllWorkSpec() {
-        thread {
-            val workSpecDao = workDatabase.workSpecDao()
-            val workIds = workSpecDao.allWorkSpecIds
+    fun refresh() = viewModelScope.launch(Dispatchers.IO) {
+        val application = getApplication<Application>()
 
-            // split up the items... because SQLite can only handle so many in a single query
-            val workSpecList = mutableListOf<WorkSpec>()
-            workIds.chunked(500).forEach { chunk ->
-                workSpecList.addAll(workSpecDao.getWorkSpecs(chunk).toList())
+        val workSpecDao = workDatabase.workSpecDao()
+        val workIds = workSpecDao.allWorkSpecIds
+
+        // split up the items... because SQLite can only handle so many in a single query
+        val workSpecList = mutableListOf<WorkSpec>()
+        workIds.chunked(500).forEach { chunk ->
+            workSpecList.addAll(workSpecDao.getWorkSpecs(chunk).toList())
+        }
+
+        _workSpecListFlow.value = workSpecList.map { workSpec ->
+            val name = formatName(workSpec)
+
+            val info = if (workSpec.isPeriodic) {
+                formatPeriodic(application, workSpec)
+            } else {
+                formatOneTime(application, workSpec)
             }
 
-            onWorkSpecListUpdated(workSpecList)
+            ListItemData(workSpec.id, name, info)
         }
     }
 
-    fun onCancelWorker(context: Context, workSpec: WorkSpec): Boolean {
-        val workManager = WorkManager.getInstance(context)
-        val workId = UUID.fromString(workSpec.id)
+    fun onCancelWorker(workSpecId: String) = viewModelScope.launch(Dispatchers.IO) {
+        val application = getApplication<Application>()
+        val workManager = WorkManager.getInstance(application)
+        val workId = UUID.fromString(workSpecId)
         workManager.cancelWorkById(workId)
-
-        return true
     }
 
-    fun refresh() {
-        getAllWorkSpec()
+    fun onPrune() = viewModelScope.launch(Dispatchers.IO) {
+        val application = getApplication<Application>()
+        WorkManager.getInstance(application).pruneWork()
+        refresh()
+    }
+
+    fun cancelAll() = viewModelScope.launch(Dispatchers.IO) {
+        val application = getApplication<Application>()
+        WorkManager.getInstance(application).cancelAllWork()
+        refresh()
+    }
+
+    private fun formatName(workSpec: WorkSpec): String {
+        return workSpec.workerClassName.substringAfterLast(".")
+    }
+
+    private fun formatOneTime(context: Context, workSpec: WorkSpec): String {
+        val schedule = if (workSpec.scheduleRequestedAt > 0) formatDateTime(context, workSpec.scheduleRequestedAt) else ""
+        val periodStart = formatDateTime(context, workSpec.periodStartTime)
+        val nextRun = formatDateTime(context, workSpec.calculateNextRunTime())
+        return """
+            Type: OneTime
+            State: ${workSpec.state}
+            Constraints: ${formatConstraints(workSpec)}
+            Schedule Requested At: $schedule
+            Period Start: $periodStart
+            Calc Next Run: $nextRun
+        """.trimIndent()
+    }
+
+    private fun formatPeriodic(context: Context, workSpec: WorkSpec): String {
+        val interval = formatInterval(workSpec.intervalDuration)
+        val schedule = if (workSpec.scheduleRequestedAt > 0) formatDateTime(context, workSpec.scheduleRequestedAt) else ""
+        val periodStart = formatDateTime(context, workSpec.periodStartTime)
+        val nextRun = formatDateTime(context, workSpec.calculateNextRunTime())
+        return """
+            Type: Periodic
+            State: ${workSpec.state}
+            Constraints: ${formatConstraints(workSpec)}
+            Interval: $interval
+            Schedule Requested At: $schedule
+            Period Start: $periodStart
+            Calc Next Run: $nextRun
+        """.trimIndent()
+
+    }
+
+    private fun formatConstraints(workSpec: WorkSpec): String {
+        var constraintsText = ""
+        if (workSpec.constraints.requiredNetworkType != NetworkType.NOT_REQUIRED) {
+            constraintsText += "NETWORK[${workSpec.constraints.requiredNetworkType}] "
+        }
+        if (workSpec.constraints.requiresBatteryNotLow()) {
+            constraintsText += "BATTERY_NOT_LOW "
+        }
+        if (workSpec.constraints.requiresCharging()) {
+            constraintsText += "CHARGING "
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && workSpec.constraints.requiresDeviceIdle()) {
+            constraintsText += "IDLE "
+        }
+        if (workSpec.constraints.requiresStorageNotLow()) {
+            constraintsText += "STORAGE_NOT_LOW "
+        }
+        if (constraintsText.isBlank()) {
+            constraintsText += "NONE"
+        }
+
+        return constraintsText
+    }
+
+    private fun formatDateTime(context: Context, ts: Long): String {
+        return DateUtils.formatDateTime(context, ts, (DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME))
+    }
+
+    private fun formatInterval(length: Long): String {
+        val day = TimeUnit.MILLISECONDS.toDays(length)
+        val hr = TimeUnit.MILLISECONDS.toHours(length - TimeUnit.DAYS.toMillis(day))
+        val min = TimeUnit.MILLISECONDS.toMinutes(length - TimeUnit.DAYS.toMillis(day) - TimeUnit.HOURS.toMillis(hr))
+
+        return when {
+            day > 0 -> String.format("%dd %dh %dm", day, hr, min)
+            hr > 0 -> String.format("%dh %dm", hr, min)
+            min > 0 -> String.format("%dm", min)
+            else -> "$length ms"
+        }
     }
 }
+
+data class ListItemData(val workSpecId: String, val title: String, val content: String)

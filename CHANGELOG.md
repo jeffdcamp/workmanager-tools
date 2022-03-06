@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+Version 2.0 *(2022-03)*
+-------------------------
+* Change view to Compose
+* Kotlin 1.6.10
+
 Version 1.17 *(2021-12)*
 -------------------------
 * WorkManager 2.7.1
