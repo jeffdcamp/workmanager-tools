@@ -5,13 +5,6 @@ plugins {
     id("dagger.hilt.android.plugin")
 }
 
-// Kotlin Libraries targeting Java8 bytecode can cause the following error (such as okHttp 4.x):
-// "Cannot inline bytecode built with JVM target 1.8 into bytecode that is being built with JVM target 1.6. Please specify proper '-jvm-target' option"
-// The following is added to allow the Kotlin Compiler to compile properly
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
 android {
     compileSdk = AndroidSdk.COMPILE
 
@@ -26,12 +19,19 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    kotlinOptions {
+        jvmTarget = "1.8"
+        freeCompilerArgs = listOf(
+            "-Xopt-in=androidx.compose.material3.ExperimentalMaterial3Api",
+        )
+    }
+
     buildFeatures {
         compose = true
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.get()
+        kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
     }
 
     lint {
@@ -67,11 +67,9 @@ dependencies {
 
     // Compose
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling)
-    implementation(libs.compose.material.material)
+    implementation(libs.compose.material3)
 
     // Code
     implementation(libs.kotlin.coroutines.android)
@@ -82,10 +80,6 @@ dependencies {
     kapt(libs.androidx.hilt.compiler)
     implementation(libs.google.hilt.library)
     implementation(libs.androidx.hilt.work)
-
-    // === Android Architecture Components ===
-//    implementation(libs.androidx.lifecycle.runtime)
-//    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 }
 
 // ===== TEST TASKS =====

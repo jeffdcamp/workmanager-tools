@@ -1,32 +1,33 @@
 package org.dbtools.android.work.ux.monitor
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.ListItem
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -45,19 +46,17 @@ fun WorkManagerStatusScreen(
                         text = "WorkManager Monitor"
                     )
                 },
-                navigationIcon ={
-                    Icon(
-                        modifier = Modifier
-                            .clickable { onBack?.invoke() }
-                            .padding(start = 12.dp),
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = null,
-                    )
+                navigationIcon = {
+                    IconButton(onClick = { onBack?.invoke() }) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = null,
+                        )
+                    }
                 },
                 actions = {
                     // Wrapping content so that the action icons have the same color as the navigation icon and title.
                     CompositionLocalProvider(
-                        LocalContentAlpha provides ContentAlpha.high,
                         content = {
                             IconButton(onClick = { viewModel.refresh() }) {
                                 Icon(
@@ -66,8 +65,8 @@ fun WorkManagerStatusScreen(
                                 )
                             }
                             val overflowMenuItems = listOf(
-                                OverflowItem("Prune") { viewModel.onPrune() },
-                                OverflowItem("Cancel All") { viewModel.cancelAll() }
+                                OverflowItem({ "Prune" }) { viewModel.onPrune() },
+                                OverflowItem({ "Cancel All" }) { viewModel.cancelAll() }
                             )
                             OverflowMenu(overflowMenuItems)
                         }
@@ -75,32 +74,32 @@ fun WorkManagerStatusScreen(
                 },
             )
         },
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            val workSpecList by viewModel.workSpecListFlow.collectAsState()
 
-    ) {
-        val workSpecList by viewModel.workSpecListFlow.collectAsState()
-
-        workSpecList?.let { list ->
-            WorkManagerStatusContent(list, onCancelItem = { workSpecId -> viewModel.onCancelWorker(workSpecId) })
+            workSpecList?.let { list ->
+                WorkManagerStatusContent(list, onCancelItem = { workSpecId -> viewModel.onCancelWorker(workSpecId) })
+            }
         }
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun WorkManagerStatusContent(listItems: List<ListItemData>, onCancelItem: (String) -> Unit) {
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         items(listItems) { listItem ->
             ListItem(
-                text = {
+                headlineText = {
                     Text(listItem.title)
 
                 },
-                secondaryText = {
+                supportingText = {
                     Text(listItem.content)
                 },
-                trailing = {
+                trailingContent = {
                     val menuItems = listOf(
-                        OverflowItem("Cancel") { onCancelItem(listItem.workSpecId) }
+                        OverflowItem({ "Cancel" }) { onCancelItem(listItem.workSpecId) }
                     )
                     OverflowMenu(menuItems)
                 }
@@ -129,15 +128,46 @@ private fun OverflowMenu(menuItems: List<OverflowItem>) {
         expanded = expanded.value,
         offset = DpOffset((-40).dp, (-40).dp),
         onDismissRequest = { expanded.value = false }) {
+
+        // determine if there are any icons in the list... if so, make sure text without icons are all indented
+        val menuItemsWithIconCount = menuItems.count { it.icon != null }
+        val textWithoutIconPadding = if (menuItemsWithIconCount > 0) 36.dp else 0.dp // 36.dp == 24.dp (icon size) + 12.dp (gap)
+
         menuItems.forEach { menuItem ->
-            DropdownMenuItem(onClick = {
-                menuItem.action()
-                expanded.value = false
-            }) {
-                Text(text = menuItem.text)
-            }
+            val menuText = menuItem.text()
+            DropdownMenuItem(
+                onClick = {
+                    menuItem.action()
+                    expanded.value = false
+                },
+                text = {
+                    if (menuItem.icon != null) {
+                        Row {
+                            Icon(
+                                imageVector = menuItem.icon,
+                                contentDescription = menuText,
+                                modifier = Modifier.padding(end = 12.dp)
+                            )
+                            Text(
+                                text = menuText,
+                                modifier = Modifier.align(Alignment.CenterVertically)
+                            )
+                        }
+                    } else {
+                        Text(
+                            text = menuText,
+                            modifier = Modifier.padding(start = textWithoutIconPadding)
+                        )
+                    }
+                },
+                modifier = Modifier.defaultMinSize(minWidth = 175.dp)
+            )
         }
     }
 }
 
-private class OverflowItem(val text: String, val action: () -> Unit)
+private class OverflowItem(
+    val text: @Composable () -> String,
+    val icon: ImageVector? = null,
+    val action: () -> Unit
+)

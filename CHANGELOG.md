@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+Version 3.0.0-beta01 *(2022-10)*
+-------------------------
+* WorkManager 2.8.0-beta01
+* Target API 33
+* Kotlin 1.7.20
+* Change view to Material3
+* Room 2.5.0-beta01
+
 Version 2.0 *(2022-03)*
 -------------------------
 * Change view to Compose

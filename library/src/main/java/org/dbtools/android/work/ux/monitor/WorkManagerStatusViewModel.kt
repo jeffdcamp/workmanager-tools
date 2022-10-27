@@ -40,12 +40,12 @@ class WorkManagerStatusViewModel(
         val application = getApplication<Application>()
 
         val workSpecDao = workDatabase.workSpecDao()
-        val workIds = workSpecDao.allWorkSpecIds
+        val workIds = workSpecDao.getAllWorkSpecIds()
 
         // split up the items... because SQLite can only handle so many in a single query
         val workSpecList = mutableListOf<WorkSpec>()
-        workIds.chunked(500).forEach { chunk ->
-            workSpecList.addAll(workSpecDao.getWorkSpecs(chunk).toList())
+        workIds.forEach { workSpecId ->
+            workSpecDao.getWorkSpec(workSpecId)?.let { workSpecList.add(it) }
         }
 
         _workSpecListFlow.value = workSpecList.map { workSpec ->
@@ -86,14 +86,12 @@ class WorkManagerStatusViewModel(
 
     private fun formatOneTime(context: Context, workSpec: WorkSpec): String {
         val schedule = if (workSpec.scheduleRequestedAt > 0) formatDateTime(context, workSpec.scheduleRequestedAt) else ""
-        val periodStart = formatDateTime(context, workSpec.periodStartTime)
         val nextRun = formatDateTime(context, workSpec.calculateNextRunTime())
         return """
             Type: OneTime
             State: ${workSpec.state}
             Constraints: ${formatConstraints(workSpec)}
             Schedule Requested At: $schedule
-            Period Start: $periodStart
             Calc Next Run: $nextRun
         """.trimIndent()
     }
@@ -101,7 +99,6 @@ class WorkManagerStatusViewModel(
     private fun formatPeriodic(context: Context, workSpec: WorkSpec): String {
         val interval = formatInterval(workSpec.intervalDuration)
         val schedule = if (workSpec.scheduleRequestedAt > 0) formatDateTime(context, workSpec.scheduleRequestedAt) else ""
-        val periodStart = formatDateTime(context, workSpec.periodStartTime)
         val nextRun = formatDateTime(context, workSpec.calculateNextRunTime())
         return """
             Type: Periodic
@@ -109,7 +106,6 @@ class WorkManagerStatusViewModel(
             Constraints: ${formatConstraints(workSpec)}
             Interval: $interval
             Schedule Requested At: $schedule
-            Period Start: $periodStart
             Calc Next Run: $nextRun
         """.trimIndent()
 

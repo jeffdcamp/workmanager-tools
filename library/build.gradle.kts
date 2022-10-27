@@ -18,7 +18,10 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
-        freeCompilerArgs = listOf("-module-name", Pom.LIBRARY_ARTIFACT_ID)
+        freeCompilerArgs = listOf(
+            "-module-name", Pom.LIBRARY_ARTIFACT_ID,
+            "-Xopt-in=androidx.compose.material3.ExperimentalMaterial3Api",
+        )
     }
 
     lint {
@@ -31,7 +34,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.get()
+        kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
     }
 
     sourceSets {
@@ -53,15 +56,12 @@ dependencies {
     api(libs.timber)
 
     // Compose
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.tooling)
-    implementation(libs.compose.material.material)
+    implementation(libs.compose.material3)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     // Test
-    testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.jupiter)
     testRuntimeOnly(libs.junit.engine)
     testImplementation(libs.mockK)
