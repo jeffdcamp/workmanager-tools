@@ -8,7 +8,7 @@ object AndroidSdk {
 
 object Pom {
     const val GROUP_ID = "org.dbtools"
-    const val VERSION_NAME = "3.0.0-beta01"
+    const val VERSION_NAME = "3.0.0-beta02"
     const val POM_NAME = "WorkManager Tools"
     const val POM_DESCRIPTION = "WorkManager Tools for Android is an library that makes it even easier to work with Google WorkManager Library"
 
