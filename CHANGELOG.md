@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+Version 3.0.0-beta02 *(2022-11)*
+-------------------------
+* WorkManager 2.8.0-beta02
+
 Version 3.0.0-beta01 *(2022-10)*
 -------------------------
 * WorkManager 2.8.0-beta01
