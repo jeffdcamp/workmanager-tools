@@ -54,7 +54,7 @@ class WorkScheduler
 
     fun schedulePeriodic() {
         val workRequest = createStandardPeriodicWorkRequest<SimplePeriodicWorker>(15, TimeUnit.MINUTES)
-        workManager.enqueueUniquePeriodicWork(SimplePeriodicWorker.UNIQUE_PERIODIC_WORK_NAME, ExistingPeriodicWorkPolicy.REPLACE, workRequest)
+        workManager.enqueueUniquePeriodicWork(SimplePeriodicWorker.UNIQUE_PERIODIC_WORK_NAME, ExistingPeriodicWorkPolicy.UPDATE, workRequest)
     }
 
     /**
