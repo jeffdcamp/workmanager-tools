@@ -15,6 +15,10 @@ buildscript {
     }
 }
 
+plugins {
+    id("com.autonomousapps.dependency-analysis") version "1.19.0"
+}
+
 allprojects {
     repositories {
         mavenLocal()
@@ -44,6 +48,38 @@ allprojects {
             }
         }
     }
+}
+
+// ===== Dependency Analysis =====
+// ./gradlew projectHealth
+dependencyAnalysis {
+    issues {
+        all {
+            onAny {
+                ignoreKtx(true)
+                severity("fail")
+            }
+            onUnusedDependencies {
+                exclude(
+                    ""
+                )
+            }
+            onUsedTransitiveDependencies { severity("ignore") }
+            onIncorrectConfiguration { severity("ignore") }
+            onCompileOnly { severity("ignore") }
+            onRuntimeOnly { severity("ignore") }
+            onUnusedAnnotationProcessors {
+                exclude(
+                    depGroupAndName(libs.androidx.hilt.compiler),
+                    depGroupAndName(libs.google.hilt.compiler)
+                )
+            }
+        }
+    }
+}
+
+fun depGroupAndName(dependency: Provider<MinimalExternalModuleDependency>): String {
+    return dependency.get().let { "${it.group}:${it.name}" }
 }
 
 tasks.register("clean", Delete::class) {

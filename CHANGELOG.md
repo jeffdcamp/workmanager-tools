@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+Version 3.0.0 *(2023-02)*
+-------------------------
+* WorkManager 2.8.0
+* Dependencies Update / Cleanup
+
 Version 3.0.0-rc01 *(2022-11)*
 -------------------------
 * WorkManager 2.8.0-rc01

@@ -5,7 +5,6 @@ plugins {
     `maven-publish`
     signing
     kotlin("android")
-    kotlin("kapt")
 }
 
 android {
@@ -53,7 +52,6 @@ android {
 dependencies {
     api(libs.androidx.work.runtime)
     api(libs.androidx.room.runtime)
-    api(libs.timber)
 
     // Compose
     implementation(libs.compose.ui)
@@ -65,7 +63,7 @@ dependencies {
     testImplementation(libs.junit.jupiter)
     testRuntimeOnly(libs.junit.engine)
     testImplementation(libs.mockK)
-    testImplementation(libs.truth)
+//    testImplementation(libs.truth)
 }
 
 // ===== TEST TASKS =====
