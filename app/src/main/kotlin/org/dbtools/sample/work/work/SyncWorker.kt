@@ -1,9 +1,9 @@
 package org.dbtools.sample.work.work
 
 import android.content.Context
+import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import timber.log.Timber
 
 /**
  * Example data sync worker... one that should sync your changes when the user is finished changing/editing data
@@ -40,7 +40,7 @@ class SyncWorker(context: Context, params: WorkerParameters) : CoroutineWorker(c
     }
 
     private fun logProgress(progress: String) {
-        Timber.e("*** SyncWorker[$progress] Thread:[${Thread.currentThread().name}]  Job:[${this.id}]")
+        Log.e("SyncWorker", "*** SyncWorker[$progress] Thread:[${Thread.currentThread().name}]  Job:[${this.id}]")
     }
 
     companion object {

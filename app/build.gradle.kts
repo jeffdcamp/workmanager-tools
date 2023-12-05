@@ -6,6 +6,8 @@ plugins {
 }
 
 android {
+    namespace = "org.dbtools.sample.work"
+
     compileSdk = AndroidSdk.COMPILE
 
     defaultConfig {
@@ -73,7 +75,6 @@ dependencies {
 
     // Code
     implementation(libs.kotlin.coroutines.android)
-    implementation(libs.timber)
 
     // Inject
     kapt(libs.google.hilt.compiler)

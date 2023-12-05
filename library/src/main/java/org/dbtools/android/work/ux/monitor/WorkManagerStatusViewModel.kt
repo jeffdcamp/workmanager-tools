@@ -32,7 +32,7 @@ class WorkManagerStatusViewModel(
 
     init {
         val configuration: Configuration = Configuration.Builder().build()
-        workDatabase = WorkDatabase.create(application, configuration.taskExecutor, false)
+        workDatabase = WorkDatabase.create(application, configuration.taskExecutor, { System.currentTimeMillis() }, false)
         refresh()
     }
 

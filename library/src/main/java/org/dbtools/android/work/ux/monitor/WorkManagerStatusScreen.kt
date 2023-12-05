@@ -90,11 +90,11 @@ private fun WorkManagerStatusContent(listItems: List<ListItemData>, onCancelItem
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         items(listItems) { listItem ->
             ListItem(
-                headlineText = {
+                headlineContent = {
                     Text(listItem.title)
 
                 },
-                supportingText = {
+                supportingContent = {
                     Text(listItem.content)
                 },
                 trailingContent = {

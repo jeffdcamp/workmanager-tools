@@ -1,11 +1,11 @@
 package org.dbtools.sample.work.work
 
 import android.content.Context
+import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
-import timber.log.Timber
 
 /**
  * Example simple worker... one that should execute every time it is called
@@ -22,7 +22,7 @@ class SimpleWorker(context: Context, params: WorkerParameters) : CoroutineWorker
 
             }
         } catch (e: InterruptedException) {
-            Timber.e("Sleep Failure")
+            Log.e("SimpleWorker", "Sleep Failure")
         }
 
         logProgress("FINISHED: Text: [$inputText]")
@@ -32,7 +32,7 @@ class SimpleWorker(context: Context, params: WorkerParameters) : CoroutineWorker
     }
 
     private fun logProgress(progress: String) {
-        Timber.e("*** SyncWorker[$progress] Thread:[${Thread.currentThread().name}]  Job:[${this.id}]")
+        Log.e("SimpleWorker", "*** SyncWorker[$progress] Thread:[${Thread.currentThread().name}]  Job:[${this.id}]")
     }
 
     companion object {

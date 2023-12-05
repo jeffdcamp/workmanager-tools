@@ -8,6 +8,8 @@ plugins {
 }
 
 android {
+    namespace = "org.dbtools.android.work"
+
     compileSdk = AndroidSdk.COMPILE
 
     defaultConfig {
@@ -63,7 +65,6 @@ dependencies {
     testImplementation(libs.junit.jupiter)
     testRuntimeOnly(libs.junit.engine)
     testImplementation(libs.mockK)
-//    testImplementation(libs.truth)
 }
 
 // ===== TEST TASKS =====

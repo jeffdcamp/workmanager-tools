@@ -1,10 +1,10 @@
 package org.dbtools.sample.work.work
 
 import android.content.Context
+import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
-import timber.log.Timber
 
 class SimplePeriodicWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
@@ -17,7 +17,7 @@ class SimplePeriodicWorker(context: Context, params: WorkerParameters) : Corouti
     }
 
     private fun logProgress(progress: String) {
-        Timber.e("*** SimplePeriodicWorker[$progress] Thread:[${Thread.currentThread().name}]  Job:[${this.id}]")
+        Log.e("SimplePeriodicWorker", "*** SimplePeriodicWorker[$progress] Thread:[${Thread.currentThread().name}]  Job:[${this.id}]")
     }
 
     companion object {
