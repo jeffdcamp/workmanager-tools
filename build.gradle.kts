@@ -1,22 +1,18 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 
-buildscript {
-    repositories {
-        mavenLocal()
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath(libs.android.gradlePluginClasspath)
-        classpath(libs.kotlin.gradlePluginClasspath)
-        classpath(libs.google.hilt.gradlePluginClasspath)
-        classpath(libs.gradleVersions.gradlePluginClasspath)
-    }
-}
-
 plugins {
-    id("com.autonomousapps.dependency-analysis") version "1.27.0"
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.hilt) apply false
+
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.vanniktechPublishing) apply false
+
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.download)
+    alias(libs.plugins.versions)
 }
 
 allprojects {
@@ -48,38 +44,47 @@ allprojects {
             }
         }
     }
-}
 
-// ===== Dependency Analysis =====
-// ./gradlew projectHealth
-dependencyAnalysis {
-    issues {
-        all {
-            onAny {
-                ignoreKtx(true)
-                severity("fail")
-            }
-            onUnusedDependencies {
-                exclude(
-                    ""
-                )
-            }
-            onUsedTransitiveDependencies { severity("ignore") }
-            onIncorrectConfiguration { severity("ignore") }
-            onCompileOnly { severity("ignore") }
-            onRuntimeOnly { severity("ignore") }
-            onUnusedAnnotationProcessors {
-                exclude(
-                    depGroupAndName(libs.androidx.hilt.compiler),
-                    depGroupAndName(libs.google.hilt.compiler)
-                )
-            }
+    // ===== Detekt =====
+    apply(plugin = rootProject.libs.plugins.detekt.get().pluginId)
+    apply(plugin = rootProject.libs.plugins.download.get().pluginId)
+
+    // download detekt config file
+    tasks.register<de.undercouch.gradle.tasks.download.Download>("downloadDetektConfig") {
+        download {
+            onlyIf { !file("$projectDir/build/config/detektConfig.yml").exists() }
+            src("https://mobile-cdn.churchofjesuschrist.org/android/build/detekt/detektConfig-20231101.yml")
+            dest("$projectDir/build/config/detektConfig.yml")
         }
     }
-}
 
-fun depGroupAndName(dependency: Provider<MinimalExternalModuleDependency>): String {
-    return dependency.get().let { "${it.group}:${it.name}" }
+    // make sure when running detekt, the config file is downloaded
+    tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+        // Target version of the generated JVM bytecode. It is used for type resolution.
+        this.jvmTarget = "17"
+        dependsOn("downloadDetektConfig")
+    }
+
+    // ./gradlew detekt
+    // ./gradlew detektDebug (support type checking)
+    detekt {
+        source.setFrom("src/main/kotlin", "src/commonMain/kotlin", "src/desktopMain/kotlin", "src/androidMain/kotlin")
+        allRules = true // fail build on any finding
+        buildUponDefaultConfig = true // preconfigure defaults
+        config.setFrom(files("$projectDir/build/config/detektConfig.yml")) // point to your custom config defining rules to run, overwriting default behavior
+        //    baseline = file("$projectDir/config/baseline.xml") // a way of suppressing issues before introducing detekt
+    }
+
+    tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+        // ignore ImageVector files
+        exclude("**/ui/compose/icons/**")
+
+        reports {
+            html.required.set(true) // observe findings in your browser with structure and code snippets
+            xml.required.set(true) // checkstyle like format mainly for integrations like Jenkins
+            txt.required.set(true) // similar to the console output, contains issue signature to manually edit baseline files
+        }
+    }
 }
 
 tasks.register("clean", Delete::class) {

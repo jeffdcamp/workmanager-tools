@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.0.0] - 2025-07-30
+
+### Changed
+
+- WorkManager 2.10.3
+- Kotlin 2.2.0
+- Room 2.7.2
+- Updated project files
+- Updated all other dependencies
+
+
 ## [4.0.0] - 2023-12-05
 
 ### Added

@@ -1,10 +1,10 @@
-import com.android.build.gradle.BaseExtension
-
 plugins {
-    id("com.android.library")
-    `maven-publish`
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.download)
+    alias(libs.plugins.vanniktechPublishing)
+    alias(libs.plugins.kotlin.android)
     signing
-    kotlin("android")
 }
 
 android {
@@ -17,25 +17,18 @@ android {
         targetSdk = AndroidSdk.TARGET
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs = listOf(
-            "-module-name", Pom.LIBRARY_ARTIFACT_ID,
-            "-Xopt-in=androidx.compose.material3.ExperimentalMaterial3Api",
-        )
+    buildFeatures {
+        compose = true
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     lint {
         abortOnError = true
         disable.addAll(listOf("InvalidPackage"))
-    }
-
-    buildFeatures {
-        compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
     }
 
     sourceSets {
@@ -49,6 +42,9 @@ android {
             assets.srcDir("$projectDir/schemas")
         }
     }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 }
 
 dependencies {
@@ -60,11 +56,12 @@ dependencies {
     implementation(libs.compose.ui.tooling)
     implementation(libs.compose.material3)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.core.ktx)
 
     // Test
-    testImplementation(libs.junit.jupiter)
-    testRuntimeOnly(libs.junit.engine)
-    testImplementation(libs.mockK)
+//                testImplementation(libs.junit.jupiter)
+//                testRuntimeOnly(libs.junit.engine)
+//                testImplementation(libs.mockK)
 }
 
 // ===== TEST TASKS =====
@@ -74,75 +71,44 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-// ===== Maven Deploy =====
+// ./gradlew clean build check publishToMavenLocal
+// ./gradlew clean build check publishAllPublicationsToMavenCentralRepository
+mavenPublishing {
+    val version: String by project
+    coordinates("org.dbtools", "workmanager-tools", version)
+    publishToMavenCentral()
+    signAllPublications()
 
-// ./gradlew clean assembleRelease publishMavenPublicationToMavenLocal
-// ./gradlew clean assembleRelease publishMavenPublicationToMavenCentralRepository
-
-tasks.register<Jar>("sourcesJar") {
-//    from(android.sourceSets.getByName("main").java.sourceFiles)
-    from(project.the<BaseExtension>().sourceSets["main"].java.srcDirs)
-    archiveClassifier.set("sources")
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = Pom.GROUP_ID
-            artifactId = Pom.LIBRARY_ARTIFACT_ID
-            version = Pom.VERSION_NAME
-            artifact(tasks["sourcesJar"])
-            afterEvaluate { artifact(tasks.getByName("bundleReleaseAar")) }
-            pom {
-                name.set(Pom.POM_NAME)
-                description.set(Pom.POM_DESCRIPTION)
-                url.set(Pom.URL)
-                licenses {
-                    license {
-                        name.set(Pom.LICENCE_NAME)
-                        url.set(Pom.LICENCE_URL)
-                        distribution.set(Pom.LICENCE_DIST)
-                    }
-                }
-                developers {
-                    developer {
-                        id.set(Pom.DEVELOPER_ID)
-                        name.set(Pom.DEVELOPER_NAME)
-                    }
-                }
-                scm {
-                    url.set(Pom.SCM_URL)
-                    connection.set(Pom.SCM_CONNECTION)
-                    developerConnection.set(Pom.SCM_DEV_CONNECTION)
-                }
-
-                // add dependencies to pom.xml
-                pom.withXml {
-                    val dependenciesNode = asNode().appendNode("dependencies")
-                    configurations.implementation.get().allDependencies.forEach {
-                        val dependencyNode = dependenciesNode.appendNode("dependency")
-                        dependencyNode.appendNode("groupId", it.group)
-                        dependencyNode.appendNode("artifactId", it.name)
-                        dependencyNode.appendNode("version", it.version)
-                    }
-                }
+    pom {
+        name.set("WorkManager Tools")
+        description.set("WorkManager Tools for Android is an library that makes it even easier to work with Google WorkManager Library")
+        url.set("https://github.com/jeffdcamp/workmanager-tools")
+        licenses {
+            license {
+                name.set("The Apache Software License, Version 2.0")
+                url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
             }
         }
-    }
-    repositories {
-        maven {
-            name = "MavenCentral"
-            url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
-            credentials {
-                val sonatypeNexusUsername: String? by project
-                val sonatypeNexusPassword: String? by project
-                username = sonatypeNexusUsername ?: ""
-                password = sonatypeNexusPassword ?: ""
+        developers {
+            developer {
+                id.set("jcampbell")
+                name.set("Jeff Campbell")
             }
+        }
+        scm {
+            connection.set("scm:git:git://github.com/jeffdcamp/workmanager-tools.git")
+            developerConnection.set("scm:git:git@github.com:jeffdcamp/workmanager-tools.git")
+            url.set("https://github.com/jeffdcamp/workmanager-tools")
         }
     }
 }
 
 signing {
-    sign(publishing.publications["maven"])
+    setRequired {
+        findProperty("signing.keyId") != null
+    }
+
+    publishing.publications.all {
+        sign(this)
+    }
 }

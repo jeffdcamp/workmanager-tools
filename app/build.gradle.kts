@@ -1,8 +1,17 @@
 plugins {
-    id("com.android.application")
-    kotlin("android")
-    kotlin("kapt")
-    id("dagger.hilt.android.plugin")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.detekt)
+}
+
+kotlin {
+    jvmToolchain(JavaVersion.VERSION_17.majorVersion.toInt())
+    compilerOptions {
+        optIn.add("androidx.compose.material3.ExperimentalMaterial3Api")
+    }
 }
 
 android {
@@ -21,19 +30,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs = listOf(
-            "-Xopt-in=androidx.compose.material3.ExperimentalMaterial3Api",
-        )
-    }
-
     buildFeatures {
         compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
     }
 
     lint {
@@ -77,8 +75,8 @@ dependencies {
     implementation(libs.kotlin.coroutines.android)
 
     // Inject
-    kapt(libs.google.hilt.compiler)
-    kapt(libs.androidx.hilt.compiler)
+    ksp(libs.google.hilt.compiler)
+    ksp(libs.androidx.hilt.compiler)
     implementation(libs.google.hilt.library)
     implementation(libs.androidx.hilt.work)
 }
